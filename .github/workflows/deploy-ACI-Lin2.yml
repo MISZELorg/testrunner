@@ -1,4 +1,4 @@
-name: Deploy_GHRunner_Linux_ACI
+name: Deploy_GHRunner_Linux_ACI2
 
 on:
   workflow_dispatch:

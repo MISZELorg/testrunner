@@ -20,11 +20,11 @@ jobs:
         uses: 'azure/aci-deploy@v1'
         with:
           resource-group: 'runners-rg'
-          image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/github-runner-lin:2.320.0
-          registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          image: 'kmiszelacr.azurecr.io/github-runner-lin:2.320.0'
+          registry-login-server: 'kmiszelacr.azurecr.io'
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: 'gh-runner-linux-01'
+          dns-name-label: 'gh-lin-01'
           environment-variables: GH_TOKEN=${{ secrets.PAT_TOKEN }} GH_OWNER='MISZELorg'
           location: 'northeurope'
-          ip-address: 'Private'

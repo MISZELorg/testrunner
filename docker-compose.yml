@@ -1,0 +1,13 @@
+---
+version: '3.8'
+
+services:
+  runner:
+    image: github-runner-lin:latest
+    build:
+      context: .
+      args:
+        RUNNER_VERSION: '2.320.0'
+    environment:
+      GH_TOKEN: ${GH_TOKEN}
+      GH_OWNER: ${GH_OWNER}

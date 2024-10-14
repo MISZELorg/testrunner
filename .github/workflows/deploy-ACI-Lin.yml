@@ -25,6 +25,8 @@ jobs:
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: 'gh-runner-linux-01'
-          dns-name-label: 'gh-lin-01'
+          dns-name-label: 'kmiszel187'
           environment-variables: GH_TOKEN=${{ secrets.PAT_TOKEN }} GH_OWNER='MISZELorg'
           location: 'northeurope'
+
+          ##not working. Error: Error: Encountered an internal server error. The tracking activity id is '47dd76d2-5e57-4c8b-9ae6-c56f1d312448', correlation id is '991e9a02-ff1e-4d18-9f02-10398b254abd'.

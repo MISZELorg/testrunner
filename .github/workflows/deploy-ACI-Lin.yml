@@ -28,4 +28,4 @@ jobs:
           dns-name-label: 'gh-lin-01'
           environment-variables: GH_TOKEN=${{ secrets.PAT_TOKEN }} GH_OWNER='MISZELorg'
           location: 'northeurope'
-          ip-address: private
+          ip-address: Private

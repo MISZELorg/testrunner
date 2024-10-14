@@ -25,6 +25,9 @@ jobs:
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: 'gh-runner-linux-01'
+          dns-name-label: 'gh-lin-01'  # Not needed for private IP, but can be retained for public access if needed
           environment-variables: GH_TOKEN=${{ secrets.PAT_TOKEN }} GH_OWNER='MISZELorg'
           location: 'northeurope'
           ip-address: Private
+          vnet: 'runners-vnet'  # Replace with your VNet name
+          subnet: 'default2'  # Replace with your subnet name

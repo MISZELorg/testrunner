@@ -5,7 +5,7 @@ on:
 
 env:
   RUNNER_VERSION: 2.320.0
-  ACI_RESOURCE_GROUP: 'runners-rg'
+  ACI_RESOURCE_GROUP: 'runners-rg2'
   ACI_NAME: 'gh-runner-linux-01'
   DNS_NAME_LABEL: 'gh-lin-01'
   GH_OWNER: 'MISZELorg'
@@ -35,4 +35,3 @@ jobs:
           dns-name-label: ${{ env.DNS_NAME_LABEL }}
           environment-variables: GH_TOKEN=${{ secrets.PAT_TOKEN }} GH_OWNER=${{ env.GH_OWNER }}
           location: 'northeurope'
-          debug: true

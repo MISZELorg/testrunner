@@ -1,39 +1,38 @@
-name: Deploy_GHRunner_Linux_ACI2
+name: Deploy_GHRunner_Linux_ACI
 
 on:
   workflow_dispatch:
+
+env:
+  RUNNER_VERSION: 2.320.0
+  ACI_RESOURCE_GROUP: 'runners-rg'
+  ACI_NAME: 'gh-runner-linux-01'
+  DNS_NAME_LABEL: 'gh-lin-01'
+  GH_OWNER: 'MISZELorg'
+  GH_REPOSITORY: 'testrunner'
 
 jobs:
   deploy-gh-runner-aci:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the repo
+      # checkout the repo
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@main
 
-      # Login via Azure CLI
       - name: 'Login via Azure CLI'
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Create Azure Container Instance
-      - name: 'Create Azure Container Instance'
-        run: |
-          az container create \
-            --resource-group 'runners-rg' \
-            --name 'gh-runner-linux-01' \
-            --image 'kmiszelacr.azurecr.io/github-runner-lin:2.320.0' \
-            --registry-login-server 'kmiszelacr.azurecr.io' \
-            --registry-username '${{ secrets.REGISTRY_USERNAME }}' \
-            --registry-password '${{ secrets.REGISTRY_PASSWORD }}' \
-            --environment-variables GH_TOKEN='${{ secrets.PAT_TOKEN }}' GH_OWNER='MISZELorg' \
-            --location 'northeurope' \
-            --ip-address Private \
-            --os-type Linux \
-            --cpu 1 \
-            --memory 1.5 \
-            --ports 80 \
-            --protocol TCP \
-            --restart-policy Always \
-            --dns-name-label 'gh-lin-01'
+      - name: 'Deploy to Azure Container Instances'
+        uses: 'azure/aci-deploy@v1'
+        with:
+          resource-group: ${{ env.ACI_RESOURCE_GROUP }}
+          image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/github-runner-lin:${{ env.RUNNER_VERSION }}
+          registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          name: ${{ env.ACI_NAME }}
+          dns-name-label: ${{ env.DNS_NAME_LABEL }}
+          environment-variables: GH_TOKEN=${{ secrets.PAT_TOKEN }} GH_OWNER=${{ env.GH_OWNER }} GH_REPOSITORY=${{ env.GH_REPOSITORY }}
+          location: 'northeurope'

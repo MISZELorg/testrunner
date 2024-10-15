@@ -1,4 +1,4 @@
-name: BuildandPushtoACR
+name: Push to ACR
 
 on:
   workflow_dispatch:

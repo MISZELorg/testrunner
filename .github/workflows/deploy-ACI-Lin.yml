@@ -1,4 +1,4 @@
-name: Deploy_GHRunner_Linux_ACI
+name: Deploy ACI from ACR
 
 on:
   workflow_dispatch:
@@ -6,12 +6,13 @@ on:
 env:
   RUNNER_VERSION: 2.320.0
   ACI_RESOURCE_GROUP: 'runners-rg'
-  ACI_NAME: 'gh-runner-linux-01'
-  DNS_NAME_LABEL: 'gh-lin-01'
+  DNS_NAME_LABEL: 'gh-lin-02'
   GH_OWNER: 'MISZELorg'
+  VNET_NAME: 'runners-vnet'
+  SUBNET_NAME: 'default2'
 
 jobs:
-  deploy-gh-runner-aci:
+  deploy-aci:
     runs-on: ubuntu-latest
     steps:
       # checkout the repo
@@ -23,15 +24,20 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: 'Deploy to Azure Container Instances'
-        uses: 'azure/aci-deploy@v1'
-        with:
-          resource-group: ${{ env.ACI_RESOURCE_GROUP }}
-          image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/github-runner-lin:${{ env.RUNNER_VERSION }}
-          registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-          registry-username: ${{ secrets.REGISTRY_USERNAME }}
-          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-          name: ${{ env.ACI_NAME }}
-          dns-name-label: ${{ env.DNS_NAME_LABEL }}
-          environment-variables: GH_TOKEN=${{ secrets.PAT_TOKEN }} GH_OWNER=${{ env.GH_OWNER }}
-          location: 'northeurope'
+      - name: 'Generate random ACI name'
+        run: |
+          random_suffix=$(shuf -i 10-99 -n 1)
+          echo "ACI_NAME=gh-runner-linux-${random_suffix}" >> $GITHUB_ENV
+
+      - name: 'Create Azure Container Instance'
+        run: |
+          az container create \
+            --resource-group "${{ env.ACI_RESOURCE_GROUP }}" \
+            --name "${{ env.ACI_NAME }}" \
+            --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/github-runner-lin:${{ env.RUNNER_VERSION }} \
+            --registry-login-server "${{ secrets.REGISTRY_LOGIN_SERVER }}" \
+            --registry-username "${{ secrets.REGISTRY_USERNAME }}" \
+            --registry-password "${{ secrets.REGISTRY_PASSWORD }}" \
+            --environment-variables GH_TOKEN="${{ secrets.PAT_TOKEN }}" GH_OWNER="${{ env.GH_OWNER }}" \
+            --vnet "${{ env.VNET_NAME }}" \
+            --subnet "${{ env.SUBNET_NAME }}"

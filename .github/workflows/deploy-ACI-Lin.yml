@@ -26,10 +26,10 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: 'Generate random ACI name'
+      - name: 'Generate ACI name'
+        id: set-name
         run: |
-          random_suffix=$(shuf -i 10-99 -n 1)
-          ACI_NAME="gh-runner-linux-${random_suffix}"
+          ACI_NAME="gh-runner-linux-${{ github.run_id }}"
           echo "ACI_NAME=${ACI_NAME}" >> $GITHUB_ENV
           echo "aci_name=${ACI_NAME}" >> $GITHUB_OUTPUT
           echo "Generated ACI Name: ${ACI_NAME}"
@@ -56,6 +56,11 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Debug: Check the ACI name to be deleted
+      - name: 'Debug ACI Name'
+        run: |
+          echo "ACI_NAME to delete: ${needs.deploy-aci.outputs.aci_name}"
 
       # Delete the Azure Container Instance using the output from the previous job
       - name: 'Delete Azure Container Instance'

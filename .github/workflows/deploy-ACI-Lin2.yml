@@ -10,6 +10,7 @@ env:
   DNS_NAME_LABEL: 'gh-lin-01'
   GH_OWNER: 'MISZELorg'
   GH_REPOSITORY: 'testrunner'
+  AZURE_KEY_VAULT: 'kmiszelacrkv'
 
 jobs:
   deploy-gh-runner-aci:
@@ -23,15 +24,25 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: 'Get secrets from Azure Key Vault'
+        uses: azure/keyvault-secrets@v1
+        with:
+          keyvault: ${{ env.AZURE_KEY_VAULT }}
+          secrets: |
+            REGISTRYLOGINSERVER
+            REGISTRYUSERNAME
+            REGISTRYPASSWORD
+            AZURECREDENTIALS
 
       - name: 'Deploy to Azure Container Instances'
         uses: 'azure/aci-deploy@v1'
         with:
           resource-group: ${{ env.ACI_RESOURCE_GROUP }}
-          image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/github-runner-lin:${{ env.RUNNER_VERSION }}
-          registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-          registry-username: ${{ secrets.REGISTRY_USERNAME }}
-          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          image: ${{ env.REGISTRYLOGINSERVER }}/github-runner-lin:${{ env.RUNNER_VERSION }}
+          registry-login-server: ${{ env.REGISTRYLOGINSERVER }}
+          registry-username: ${{ env.REGISTRYUSERNAME }}
+          registry-password: ${{ env.REGISTRYPASSWORD }}
           name: ${{ env.ACI_NAME }}
           dns-name-label: ${{ env.DNS_NAME_LABEL }}
           environment-variables: GH_TOKEN=${{ secrets.PAT_TOKEN }} GH_OWNER=${{ env.GH_OWNER }} GH_REPOSITORY=${{ env.GH_REPOSITORY }}

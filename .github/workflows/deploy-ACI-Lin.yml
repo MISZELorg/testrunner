@@ -47,20 +47,20 @@ jobs:
             --vnet "${{ env.VNET_NAME }}" \
             --subnet "${{ env.SUBNET_NAME }}"
 
-  destroy-aci:
-    runs-on: ubuntu-latest
-    needs: deploy-aci
-    steps:
-      # Login via Azure CLI (required to run Azure CLI commands)
-      - name: 'Login via Azure CLI'
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  # destroy-aci:
+  #   runs-on: ubuntu-latest
+  #   needs: deploy-aci
+  #   steps:
+  #     # Login via Azure CLI (required to run Azure CLI commands)
+  #     - name: 'Login via Azure CLI'
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Delete the Azure Container Instance using the output from the previous job
-      - name: 'Delete Azure Container Instance'
-        run: |
-          az container delete \
-          --resource-group "${{ env.ACI_RESOURCE_GROUP }}" \
-          --name "${{ needs.deploy-aci.outputs.aci_name }}" \
-          --yes
+  #     # Delete the Azure Container Instance using the output from the previous job
+  #     - name: 'Delete Azure Container Instance'
+  #       run: |
+  #         az container delete \
+  #         --resource-group "${{ env.ACI_RESOURCE_GROUP }}" \
+  #         --name "${{ needs.deploy-aci.outputs.aci_name }}" \
+  #         --yes

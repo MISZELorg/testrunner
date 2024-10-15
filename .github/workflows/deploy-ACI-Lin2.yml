@@ -1,0 +1,39 @@
+name: Deploy ACI from ACR
+
+on:
+  workflow_dispatch:
+
+env:
+  RUNNER_VERSION: 2.320.0
+  ACI_RESOURCE_GROUP: 'runners-rg'
+  ACI_NAME: 'gh-runner-linux-02'
+  DNS_NAME_LABEL: 'gh-lin-02'
+  GH_OWNER: 'MISZELorg'
+  VNET_NAME: 'runners-vnet'
+  SUBNET_NAME: 'default2'
+
+jobs:
+  deploy-aci:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout the repo
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@main
+
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Create Azure Container Instance'
+        run: |
+          az container create \
+            --resource-group "${{ env.ACI_RESOURCE_GROUP }}" \
+            --name "${{ env.ACI_NAME }}" \
+            --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/github-runner-lin:${{ env.RUNNER_VERSION }} \
+            --registry-login-server "${{ secrets.REGISTRY_LOGIN_SERVER }}" \
+            --registry-username "${{ secrets.REGISTRY_USERNAME }}" \
+            --registry-password "${{ secrets.REGISTRY_PASSWORD }}" \
+            --environment-variables GH_TOKEN="${{ secrets.PAT_TOKEN }}" GH_OWNER="${{ env.GH_OWNER }}" \
+            --vnet "${{ env.VNET_NAME }}" \
+            --subnet "${{ env.SUBNET_NAME }}"

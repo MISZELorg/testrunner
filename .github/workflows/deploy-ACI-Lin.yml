@@ -57,11 +57,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Debug: Check the ACI name to be deleted
-      - name: 'Debug ACI Name'
-        run: |
-          echo "ACI_NAME to delete: ${needs.deploy-aci.outputs.aci_name}"
-
       # Delete the Azure Container Instance using the output from the previous job
       - name: 'Delete Azure Container Instance'
         run: |

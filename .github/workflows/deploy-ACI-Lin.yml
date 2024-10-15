@@ -30,7 +30,6 @@ jobs:
         id: set-name
         run: |
           ACI_NAME="gh-runner-linux-${{ github.run_id }}"
-          echo "ACI_NAME=${ACI_NAME}" >> $GITHUB_ENV
           echo "aci_name=${ACI_NAME}" >> $GITHUB_OUTPUT
           echo "Generated ACI Name: ${ACI_NAME}"
 

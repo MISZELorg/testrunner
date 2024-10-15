@@ -6,7 +6,6 @@ on:
 env:
   RUNNER_VERSION: 2.320.0
   ACI_RESOURCE_GROUP: 'runners-rg'
-  ACI_NAME: 'gh-runner-linux-02'
   DNS_NAME_LABEL: 'gh-lin-02'
   GH_OWNER: 'MISZELorg'
   VNET_NAME: 'runners-vnet'
@@ -24,6 +23,11 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Generate random ACI name'
+        run: |
+          random_suffix=$(shuf -i 10-99 -n 1)
+          echo "ACI_NAME=gh-runner-linux-${random_suffix}" >> $GITHUB_ENV
 
       - name: 'Create Azure Container Instance'
         run: |

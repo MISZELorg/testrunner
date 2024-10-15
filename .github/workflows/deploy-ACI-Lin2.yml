@@ -25,15 +25,12 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
-      - name: 'Get secrets from Azure Key Vault'
-        uses: azure/keyvault-secrets@v1
-        with:
-          keyvault: ${{ env.AZURE_KEY_VAULT }}
-          secrets: |
-            REGISTRYLOGINSERVER
-            REGISTRYUSERNAME
-            REGISTRYPASSWORD
-            AZURECREDENTIALS
+      - name: 'Fetch secrets from Azure Key Vault'
+        run: |
+          echo "Fetching secrets from Key Vault..."
+          export REGISTRYLOGINSERVER=$(az keyvault secret show --vault-name ${{ env.AZURE_KEY_VAULT }} --name REGISTRYLOGINSERVER --query value -o tsv)
+          export REGISTRYUSERNAME=$(az keyvault secret show --vault-name ${{ env.AZURE_KEY_VAULT }} --name REGISTRYUSERNAME --query value -o tsv)
+          export REGISTRYPASSWORD=$(az keyvault secret show --vault-name ${{ env.AZURE_KEY_VAULT }} --name REGISTRYPASSWORD --query value -o tsv)
 
       - name: 'Deploy to Azure Container Instances'
         uses: 'azure/aci-deploy@v1'

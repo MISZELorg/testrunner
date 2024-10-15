@@ -10,7 +10,7 @@ REG_TOKEN=$(curl -sX POST -H "Accept: application/vnd.github.v3+json" -H "Author
 
 cd /home/docker/actions-runner
 
-./config.sh --unattended --url https://github.com/${GH_OWNER} --token ${REG_TOKEN} --name ${RUNNER_NAME} --labels testrunner
+./config.sh --unattended --url https://github.com/${GH_OWNER} --token ${REG_TOKEN} --name ${RUNNER_NAME} --labels ghrunner
 
 cleanup() {
     echo "Removing runner..."

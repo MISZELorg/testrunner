@@ -66,6 +66,6 @@ jobs:
       - name: 'Delete Azure Container Instance'
         run: |
           az container delete \
-            --resource-group "${{ env.ACI_RESOURCE_GROUP }}" \
-            --name "${{ needs.deploy-aci.outputs.aci_name }}" \
-            --yes
+          --resource-group "${{ env.ACI_RESOURCE_GROUP }}" \
+          --name "${{ needs.deploy-aci.outputs.aci_name }}" \
+          --yes

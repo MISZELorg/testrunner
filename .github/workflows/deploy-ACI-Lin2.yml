@@ -36,8 +36,8 @@ jobs:
         uses: 'azure/aci-deploy@v1'
         with:
           resource-group: ${{ env.ACI_RESOURCE_GROUP }}
-          image: ${{ env.REGISTRYLOGINSERVER }}/github-runner-lin:${{ env.RUNNER_VERSION }}
-          registry-login-server: ${{ env.REGISTRYLOGINSERVER }}
+          image: kmiszelacr2.azurecr.io/github-runner-lin:${{ env.RUNNER_VERSION }}
+          registry-login-server: kmiszelacr2.azurecr.io
           registry-username: ${{ env.REGISTRYUSERNAME }}
           registry-password: ${{ env.REGISTRYPASSWORD }}
           name: ${{ env.ACI_NAME }}
